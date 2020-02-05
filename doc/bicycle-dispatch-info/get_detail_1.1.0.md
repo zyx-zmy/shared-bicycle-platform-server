@@ -9,3 +9,5 @@ GET /bicycle_dispatch_infos/:bicycle_dispatch_info_id
 ##### status 403 权限错误
 ##### status 404 bicycle_dispatch_info_id没找到
 
+[BicycleDispatchInfo]:entities.md#BicycleDispatchInfo
+

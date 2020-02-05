@@ -9,3 +9,4 @@ GET /bicycle_events/:bicycle_event_id
 ##### status 403 权限错误
 ##### status 404 bicycle_event_id没找到
 
+[BicycleEvent]:entities.md#BicycleEvent

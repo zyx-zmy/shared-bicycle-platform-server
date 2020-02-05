@@ -9,3 +9,4 @@ GET /bicycle_orders/:bicycle_order_id
 ##### status 403 权限错误
 ##### status 404 bicycle_order_id没找到
 
+[BicycleOrder]:entities.md#BicycleOrder

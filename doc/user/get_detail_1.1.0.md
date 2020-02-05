@@ -9,3 +9,4 @@ GET /users/:user_id
 ##### status 403 权限错误
 ##### status 404 user_id没找到
 
+[User]:entities.md#User

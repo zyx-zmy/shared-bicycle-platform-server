@@ -29,3 +29,5 @@ GET /bicycle_dispatch_infos
     ]
 }
 ```
+
+[BicycleDispatchInfo]:entities.md#BicycleDispatchInfo

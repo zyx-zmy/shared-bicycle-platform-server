@@ -8,3 +8,5 @@ GET /bicycle_driving_ranges/:bicycle_driving_range_id
 ##### status 200 成功返回 [BicycleDrivingRange] 对象
 ##### status 403 权限错误
 ##### status 404 bicycle_driving_range_id 没找到
+
+[BicycleDrivingRange]:entities.md#BicycleDrivingRange

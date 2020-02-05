@@ -31,3 +31,4 @@ GET /bicycle_events
     ]
 }
 ```
+[BicycleEvent]:entities.md#BicycleEvent

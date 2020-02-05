@@ -27,3 +27,4 @@ GET /bicycle_driving_ranges
     ]
 }
 ```
+[BicycleDrivingRange]:entities.md#BicycleDrivingRange

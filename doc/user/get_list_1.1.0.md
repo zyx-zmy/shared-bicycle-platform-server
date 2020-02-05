@@ -27,3 +27,5 @@ GET /users
     ]
 }
 ```
+
+[User]:entities.md#User

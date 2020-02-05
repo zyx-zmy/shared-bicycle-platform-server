@@ -31,3 +31,4 @@ GET /bicycle_orders
     ]
 }
 ```
+[BicycleOrder]:entities.md#BicycleOrder
