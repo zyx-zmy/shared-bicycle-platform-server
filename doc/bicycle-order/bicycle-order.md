@@ -1,6 +1,6 @@
-# 单车调度信息
+# 单车订单
 
-## 获取单车调度信息列表
+## 获取单车订单列表
 {% tabs version1="1.10" %}
 
 {% content "version1" %}
@@ -10,7 +10,7 @@
 {% endtabs %}
 
 
-## 获取单车调度信息详情
+## 获取单车订单详情
 {% tabs version2="1.10" %}
 
 {% content "version2" %}
