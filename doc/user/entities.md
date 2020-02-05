@@ -6,7 +6,7 @@
 |company_id|string|企业id|
 |company_name|string|企业名称|
 |registration_time|float|注册时间|
-|credit_score|string|信用积分|
+|credit_score|int|信用积分|
 |credit_des|string|信用描述|
 
 
