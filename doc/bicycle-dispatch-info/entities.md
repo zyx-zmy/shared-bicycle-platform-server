@@ -9,8 +9,8 @@
 |dispatch_status|int|调度状态 1未完成,2已完成|
 |dispatcher|string|调度人|
 |dispatcher_phone|string|调度人联系电话|
-|dispatch_start_time|float|调度开始时间|
-|dispatch_end_time|float|调度结束时间|
+|dispatch_start_time|string|调度开始时间|
+|dispatch_end_time|string|调度结束时间|
 |dispatch_start_addr|string|调度开始位置|
 |dispatch_end_addr|string|调度结束位置|
 
