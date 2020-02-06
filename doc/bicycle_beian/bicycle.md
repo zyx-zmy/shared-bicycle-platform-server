@@ -40,5 +40,44 @@
 
 {% endtabs %}
 
+## 修改单车准入数量
+{% tabs version4="1.10" %}
+
+{% content "version4" %}
+
+!INCLUDE "shared_bicycle_platform_server.bicycle.1.1.0.patch.md"
+
+{% endtabs %}
+
+
+## 增加单车编号
+{% tabs version4="1.10" %}
+
+{% content "version4" %}
+
+!INCLUDE "shared_bicycle_platform_server.bicycle_number.1.1.0.add.md"
+
+{% endtabs %}
+
+## 获取单车编号
+{% tabs version3="1.10" %}
+
+{% content "version3" %}
+
+!INCLUDE "shared_bicycle_platform_server.bicycle_number.1.1.0.get.md"
+
+{% endtabs %}
+
+
+
+## 删除单车编号
+{% tabs version1="1.10" %}
+
+{% content "version1" %}
+
+!INCLUDE "shared_bicycle_platform_server.bicycle_number.1.1.0.delete.md"
+
+{% endtabs %}
+
 
 

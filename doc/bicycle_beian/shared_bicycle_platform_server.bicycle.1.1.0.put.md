@@ -1,7 +1,7 @@
 #### 请求地址
 
 ```
-PUT /admin/beian/bicycles/:bicycle_id
+PUT /admin/beian/bicycles/:beian_bicycle_id
 ```
 
 #### 请求参数	 
@@ -21,6 +21,7 @@ bicycle_type          |int     |T  |单车类型
 Status: 403 Forbidden 授权无效或已过期
 
 Status: 404 Not Found 内容未找到
+
 Status: 422 Unprocessable Entity
 {
     "message": "Validation Failed",
@@ -31,4 +32,3 @@ Status: 422 Unprocessable Entity
 Status: 204 Ok 成功
 
 ```
-Status: 204 成功

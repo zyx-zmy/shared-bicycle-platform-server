@@ -21,6 +21,8 @@ bicycle_type          |int     |T  |单车类型
 ```
 Status: 403 Forbidden 授权无效或已过期
 
+Status: 404 Not Found 内容未找到
+
 Status: 422 Unprocessable Entity
 {
     "message": "Validation Failed",
@@ -33,6 +35,6 @@ Status: 201 Ok 成功
 ```
 Status: 201 成功
 {
-	"bicycle_id": "sjdkjadjsakjda",
+	"beian_bicycle_id": "sjdkjadjsakjda",
 	"created_time": 1625375822,
 }
