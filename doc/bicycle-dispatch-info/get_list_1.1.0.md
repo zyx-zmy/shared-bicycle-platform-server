@@ -14,7 +14,7 @@ GET /bicycle_dispatch_infos
 
 #### 返回状态
 
-##### status 200 成功返回 [BicycleDispatchInfo] 列表
+##### status 200 成功返回 [BicycleTransferRecords] 列表
 ##### status 403 权限错误
 ##### status 422 参数错误
 ```
@@ -30,4 +30,4 @@ GET /bicycle_dispatch_infos
 }
 ```
 
-[BicycleDispatchInfo]:entities.md#BicycleDispatchInfo
+[BicycleTransferRecords]:entities.md#BicycleTransferRecords

@@ -1,4 +1,4 @@
-## BicycleDispatchInfo
+## BicycleTransferRecords
 
 |字段|类型|说明|
 |---|---|---|
