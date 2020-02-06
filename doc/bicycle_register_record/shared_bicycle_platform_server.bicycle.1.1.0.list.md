@@ -13,7 +13,8 @@ bicycle_num           |string  |F  |车辆编号
 bicycle_type_num      |string  |F  |车型编号
 bicycle_type          |int     |F  |单车类型
 put_status            |int     |F  |投放状态 1:未投放 2:已投放 3:维修中 4 已回收
-
+page_size             |int     |F  |页数 默认15
+page_num              |int     |F  |页码
 
 
 #### 返回结果

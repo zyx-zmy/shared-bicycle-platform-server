@@ -11,7 +11,8 @@ name                  |type    |NN |comments
 company_name          |string  |F  |公司名称
 bicycle_num           |string  |F  |车辆编号
 bicycle_status        |string  |F  |车辆状态 1:停放中2:行驶中3:调度中4:被预约
-
+page_size             |int     |F  |页数 默认15
+page_num              |int     |F  |页码
 
 #### 返回结果
 
