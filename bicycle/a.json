@@ -1,0 +1,35 @@
+{
+  "bicycle_num": "哈罗123456",
+  "bicycle_type_num": "哈罗001",
+  "location_type": 1,
+  "bluetooth_mac": "123:32:25",
+  "frame_number": "weq23e2ewq1",
+  "production_time": "1764586232",
+  "first_put_time": "1764586232",
+  "last_put_time": "1764586232",
+  "last_put_lon": "1764586232",
+  "last_put_lat": "1764586232",
+  "last_put_position": "创新路",
+  "repair_count": 10,
+  "last_repair_time": "1764586232",
+  "last_recovery_time": "1764586232",
+  "put_status": 3
+}
+
+{
+  "bicycle_num": "哈罗123456",
+  "bicycle_type_num": "哈罗0019",
+  "location_type": 9,
+  "bluetooth_mac": "123:32:259",
+  "frame_number": "weq23e2ewq19",
+  "production_time": "17645862329",
+  "first_put_time": "17645862329",
+  "last_put_time": "17645862329",
+  "last_put_lon": "17645862329",
+  "last_put_lat": "17645862329",
+  "last_put_position": "创新路11111",
+  "repair_count": 10,
+  "last_repair_time": "1764586232",
+  "last_recovery_time": "1764586232",
+  "put_status": 9
+}
