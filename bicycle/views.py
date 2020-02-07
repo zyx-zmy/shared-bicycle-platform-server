@@ -29,6 +29,7 @@ class AddBicycle(View):
 class AlterBicycle(View):
 
     def post(self, request, bicycle_num):
+        print(111)
         str = request.body.decode()
         data_dict = json.loads(str)
         data, status = verify_form(AlterBicycleForm, data_dict)

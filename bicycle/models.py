@@ -11,6 +11,8 @@ class Bicycle(models.Model):
     bicycle_num = models.CharField(max_length=100)
     # 车型编号
     bicycle_type_num = models.CharField(max_length=100)
+    # # 公司id
+    # company_id = models.CharField(max_length=100)
     # 公司名称
     company_name = models.CharField(max_length=100)
     # 车辆类型

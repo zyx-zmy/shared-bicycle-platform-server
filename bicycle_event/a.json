@@ -1,0 +1,14 @@
+{
+  "remote_event_id": "123123123",
+  "user_num": "xiaoming",
+  "event_type": 1,
+  "bicycle_order_id": "123123123",
+  "start_time": "123123123",
+  "end_time": "123123123",
+  "start_lon": "123.123123",
+  "start_lat": "123.123123",
+  "start_position": "浑南1",
+  "end_lon": "123.123123",
+  "end_lat": "123.123123",
+  "end_position": "浑南2"
+}
