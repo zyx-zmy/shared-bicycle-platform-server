@@ -60,8 +60,8 @@ class BicycleDriverRecordView(View):
         next_page = True if responses_count > data['page_size'] * data['page_num'] else False
         if next_page:
             params = 'page_num=%d&page_size=%d' % (data['page_num'] + 1, data['page_size'])
-            if data['company_name']:
-                params += '&company_name=%s' % (data['company_name'])
+            if data['company_id']:
+                params += '&company_id=%s' % (data['company_id'])
             if data['bicycle_num']:
                 params += '&bicycle_num=%s' % data['bicycle_num']
             if data['bicycle_status']:

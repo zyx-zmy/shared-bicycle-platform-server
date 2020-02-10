@@ -24,3 +24,19 @@ class AlterUsersForm(forms.Form):
     # 信用描述
     credit_description = forms.CharField(max_length=32, required=True)
 
+class GetUserForm(forms.Form):
+    # 公司id
+    company_id = forms.CharField(max_length=255, required=False)
+    user_id = forms.CharField(max_length=255, required=False)
+    page_num = forms.IntegerField(required=False)
+    page_size = forms.IntegerField(required=False)
+
+    def clean_page_num(self):
+        page_num = self.cleaned_data['page_num']
+        page_num = int(page_num) if page_num else 1
+        return page_num
+
+    def clean_page_size(self):
+        page_size = self.cleaned_data['page_size']
+        page_size = int(page_size) if page_size else 15
+        return page_size

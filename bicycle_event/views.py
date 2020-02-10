@@ -1,5 +1,7 @@
 import json
 
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import JsonResponse, HttpResponseNotFound, HttpResponse
 from django.shortcuts import render
 
@@ -7,12 +9,14 @@ from django.shortcuts import render
 from django.views import View
 
 from bicycle.models import Bicycle
-from bicycle_event.forms import AddBicycleEventForm, AlterBicycleEventForm
+from bicycle_event.forms import AddBicycleEventForm, AlterBicycleEventForm, GetBicycleEventForm
 from bicycle_event.models import BicycleEvent
+from company.models import Company
 from user.models import User
 from utils.decorators_client_bicycle import bicycle_client_required
 from utils.forms import validate_form
-from utils.helper import HttpJsonResponse
+from utils.decorators import session_required
+from utils.helper import HttpJsonResponse, get_local_host
 
 
 class AddBicycleEvent(View):
@@ -78,3 +82,47 @@ class AlterBicycleEvent(View):
         b_event.end_addr = data['end_position']
         b_event.save()
         return HttpResponse(status=204)
+
+class GetBicycleEvent(View):
+    @session_required()
+    def get(self, request):
+        flag, data = validate_form(GetBicycleEventForm, request.jsondata)
+        if not flag:
+            return HttpJsonResponse({"message": "Validation Failed", "errors": data}, status=422)
+        q = Q()
+        if data["company_id"]:
+            try:
+                company = Company.objects.get(company_id=data["company_id"])
+            except Company.DoesNotExist:
+                return HttpJsonResponse([])
+            q &= Q(company=company)
+        if data["bicycle_number"]:
+            q &= Q(bicycle_number=data["bicycle_number"])
+        if data["user_id"]:
+            try:
+                user = User.objects.get(user_id=data['user_id'])
+            except User.DoesNotExist:
+                return HttpJsonResponse([])
+            q &= Q(user=user)
+        if data["event_type"]:
+            q &= Q(event_type=data["event_type"])
+        responses = BicycleEvent.objects.filter(q).order_by("-updated_time")
+        responses_count = len(responses)
+        responses = Paginator(responses, data['page_size'])
+        responses = responses.page(data['page_num'])
+        responses = [res.detail_info() for res in responses]
+        response = HttpJsonResponse(responses)
+        next_page = True if responses_count > data['page_size'] * data['page_num'] else False
+        if next_page:
+            params = 'page_num=%d&page_size=%d' % (data['page_num'] + 1, data['page_size'])
+            if data['company_id']:
+                params += '&company_id=%s' % (data['company_id'])
+            if data['event_type']:
+                params += '&event_type=%s' % data['event_type']
+            if data['bicycle_number']:
+                params += '&bicycle_number=%s' % data['bicycle_number']
+            if data['user_id']:
+                params += '&user_id=%s' % data['user_id']
+            response['Link'] = r'<%s%s?%s>; rel="next"' % (
+                get_local_host(request), request.path, params)
+        return response

@@ -28,3 +28,25 @@ class AlterBicycleOrderForm(forms.Form):
     end_lat = forms.CharField(max_length=100, required=False)
     end_position = forms.CharField(max_length=100, required=False)
     distance = forms.IntegerField(required=False)
+
+class GetBicycleOrderForm(forms.Form):
+    # 公司id
+    company_id = forms.CharField(max_length=255, required=False)
+    # 车辆编号
+    bicycle_number = forms.CharField(max_length=255, required=False)
+    user_id = forms.CharField(max_length=255, required=False)
+    bicycle_order_id = forms.CharField(max_length=255, required=False)
+    page_num = forms.IntegerField(required=False)
+    page_size = forms.IntegerField(required=False)
+
+    def clean_page_num(self):
+        page_num = self.cleaned_data['page_num']
+        page_num = int(page_num) if page_num else 1
+        return page_num
+
+    def clean_page_size(self):
+        page_size = self.cleaned_data['page_size']
+        page_size = int(page_size) if page_size else 15
+        return page_size
+
+

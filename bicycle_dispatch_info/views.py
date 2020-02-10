@@ -1,17 +1,22 @@
 import json
 
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import JsonResponse, HttpResponseNotFound, HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
 from django.views import View
 
+from company.models import Company
+from utils.decorators import session_required
 from bicycle.models import Bicycle
-from bicycle_dispatch_info.forms import AddBicycleDispatchInfoForm, AlterBicycleDispatchInfoForm
+from bicycle_dispatch_info.forms import AddBicycleDispatchInfoForm, AlterBicycleDispatchInfoForm,\
+    GetBicycleDispatchInfoForm
 from bicycle_dispatch_info.models import BicycleDispatchInfo
 from utils.decorators_client_bicycle import bicycle_client_required
 from utils.forms import validate_form
-from utils.helper import HttpJsonResponse
+from utils.helper import HttpJsonResponse, get_local_host
 
 
 class AddBicycleDispatchInfoView(View):
@@ -81,3 +86,48 @@ class AlterBicycleDispatchInfoView(View):
         bdi.dispatch_end_addr = data['transfer_end_position']
         bdi.save()
         return HttpResponse(status=204)
+
+class BicycleDispatchInfosView(View):
+    @session_required()
+    def get(self, request, bicycle_dispatch_info_id):
+        try:
+            record = BicycleDispatchInfo.objects.get(bicycle_dispatch_info_id=bicycle_dispatch_info_id)
+        except BicycleDispatchInfo.DoesNotExist:
+            return HttpResponseNotFound()
+        return HttpJsonResponse(record.detail_info())
+
+class BicycleDispatchInfoView(View):
+    @session_required()
+    def get(self, request):
+        flag, data = validate_form(GetBicycleDispatchInfoForm, request.jsondata)
+        if not flag:
+            return HttpJsonResponse({"message": "Validation Failed", "errors": data}, status=422)
+        q = Q()
+        if data["company_id"]:
+            try:
+                company = Company.objects.get(company_id=data["company_id"])
+            except Company.DoesNotExist:
+                return HttpJsonResponse([])
+            q &= Q(company=company)
+        if data["bicycle_number"]:
+            q &= Q(bicycle_number=data["bicycle_number"])
+        if data["dispatch_status"]:
+            q &= Q(dispatch_status=data["dispatch_status"])
+        responses = BicycleDispatchInfo.objects.filter(q).order_by("-updated_time")
+        responses_count = len(responses)
+        responses = Paginator(responses, data['page_size'])
+        responses = responses.page(data['page_num'])
+        responses = [res.detail_info() for res in responses]
+        response = HttpJsonResponse(responses)
+        next_page = True if responses_count > data['page_size'] * data['page_num'] else False
+        if next_page:
+            params = 'page_num=%d&page_size=%d' % (data['page_num'] + 1, data['page_size'])
+            if data['company_id']:
+                params += '&company_id=%s' % (data['company_id'])
+            if data['bicycle_number']:
+                params += '&bicycle_number=%s' % data['bicycle_number']
+            if data['dispatch_status']:
+                params += '&dispatch_status=%s' % data['dispatch_status']
+            response['Link'] = r'<%s%s?%s>; rel="next"' % (
+                get_local_host(request), request.path, params)
+        return response

@@ -1,17 +1,22 @@
 import json
 
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import JsonResponse, HttpResponseNotFound, HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
 from django.views import View
 
+from company.models import Company
+from user.models import User
+from utils.decorators import session_required
 from bicycle.models import Bicycle
-from bicycle_order.forms import AddBicycleOrderForm, AlterBicycleOrderForm
+from bicycle_order.forms import AddBicycleOrderForm, AlterBicycleOrderForm, GetBicycleOrderForm
 from bicycle_order.models import BicycleOrder
 from utils.decorators_client_bicycle import bicycle_client_required
 from utils.forms import validate_form
-from utils.helper import HttpJsonResponse
+from utils.helper import HttpJsonResponse, get_local_host
 
 
 class AddBicycleOrderView(View):
@@ -73,3 +78,56 @@ class AlterBicycleOrderView(View):
         b_order.driving_distance = data['distance']
         b_order.save()
         return HttpResponse(status=204)
+
+class BicycleOrderView(View):
+    @session_required()
+    def get(self, request, bicycle_order_id):
+        try:
+            record = BicycleOrder.objects.get(bicycle_order_id=bicycle_order_id)
+        except BicycleOrder.DoesNotExist:
+            return HttpResponseNotFound()
+        return HttpJsonResponse(record.detail_info())
+
+class BicycleOrdersView(View):
+    @session_required()
+    def get(self, request):
+        flag, data = validate_form(GetBicycleOrderForm, request.jsondata)
+        if not flag:
+            return HttpJsonResponse({"message": "Validation Failed", "errors": data}, status=422)
+        q = Q()
+        if data["company_id"]:
+            try:
+                company = Company.objects.get(company_id=data["company_id"])
+            except Company.DoesNotExist:
+                return HttpJsonResponse([])
+            q &= Q(company=company)
+        if data["bicycle_number"]:
+            q &= Q(bicycle_number=data["bicycle_number"])
+        if data["user_id"]:
+            try:
+                user = User.objects.get(user_id=data['user_id'])
+            except User.DoesNotExist:
+                return HttpJsonResponse([])
+            q &= Q(user=user)
+        if data["bicycle_order_id"]:
+            q &= Q(bicycle_order_id=data["bicycle_order_id"])
+        responses = BicycleOrder.objects.filter(q).order_by("-updated_time")
+        responses_count = len(responses)
+        responses = Paginator(responses, data['page_size'])
+        responses = responses.page(data['page_num'])
+        responses = [res.detail_info() for res in responses]
+        response = HttpJsonResponse(responses)
+        next_page = True if responses_count > data['page_size'] * data['page_num'] else False
+        if next_page:
+            params = 'page_num=%d&page_size=%d' % (data['page_num'] + 1, data['page_size'])
+            if data['company_id']:
+                params += '&company_id=%s' % (data['company_id'])
+            if data['bicycle_number']:
+                params += '&bicycle_number=%s' % data['bicycle_number']
+            if data['user_id']:
+                params += '&user_id=%s' % data['user_id']
+            if data['bicycle_order_id']:
+                params += '&bicycle_order_id=%s' % data['bicycle_order_id']
+            response['Link'] = r'<%s%s?%s>; rel="next"' % (
+                get_local_host(request), request.path, params)
+        return response
