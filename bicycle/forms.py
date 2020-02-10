@@ -1,6 +1,5 @@
 from django import forms
 
-from utils.time_helper import ttd
 
 
 class AddBicycleForm(forms.Form):

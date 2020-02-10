@@ -11,10 +11,7 @@ class Bicycle(models.Model):
     bicycle_num = models.CharField(max_length=100)
     # 车型编号
     bicycle_type_num = models.CharField(max_length=100)
-    # # 公司id
-    # company_id = models.CharField(max_length=100)
-    # 公司名称
-    company_name = models.CharField(max_length=100)
+    company = models.ForeignKey('company.Company', on_delete=models.SET_NULL, null=True)
     # 车辆类型
     bicycle_type = models.IntegerField()
     # 定位类型 1:gps 定位 2:基站定位 3:gps 和 基站综合定位
@@ -54,7 +51,7 @@ class Bicycle(models.Model):
             'bicycle_id': self.bicycle_id,
             'bicycle_num': self.bicycle_num,
             'bicycle_type_num': self.bicycle_type_num,
-            'company_name': self.company_name,
+            'company_name': self.company.company_name,
             'bicycle_type': self.bicycle_type,
             'location_type': self.location_type,
             'bluetooth_mac': self.bluetooth_mac,

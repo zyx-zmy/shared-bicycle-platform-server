@@ -8,31 +8,32 @@ from django.views import View
 
 from bicycle.forms import AddBicycleForm, AlterBicycleForm
 from bicycle.models import Bicycle
+from bicycle_beian.models import BicycleBeian
+from utils.decorators_client_bicycle import bicycle_client_required
 from utils.forms import validate_form
 
 
 class AddBicycle(View):
-
+    @bicycle_client_required()
     def post(self, request):
-        str = request.body.decode()
-        data_dict = json.loads(str)
-        status, data = validate_form(AddBicycleForm, data_dict)
+        status, data = validate_form(AddBicycleForm, request.jsondata)
         if not status:
             return JsonResponse(status=204,data=data)
         # todo 车辆类型去备案取
-        # data['bicycle_type'] =
-
+        try:
+            bicycle_type_num = BicycleBeian.objects.get(bicycle_model_code=data['bicycle_type_num']).bicycle_type
+        except BicycleBeian.DoesNotExist:
+            return HttpResponseNotFound()
+        data['bicycle_type'] = bicycle_type_num
+        data['company_id'] = request.company_id
         Bicycle.objects.create(**data)
         return HttpResponse(status=204)
 
 
 class AlterBicycle(View):
-
+    @bicycle_client_required()
     def post(self, request, bicycle_num):
-        print(111)
-        str = request.body.decode()
-        data_dict = json.loads(str)
-        status, data = validate_form(AlterBicycleForm, data_dict)
+        status, data = validate_form(AlterBicycleForm, request.jsondata)
         if not status:
             return JsonResponse(status=204,data=data)
         try:
