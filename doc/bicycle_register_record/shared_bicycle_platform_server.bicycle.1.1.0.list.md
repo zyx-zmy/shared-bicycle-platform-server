@@ -8,7 +8,7 @@ GET /admin/bicycles
 
 name                  |type    |NN |comments
 ----------------------|--------|---|----------------------
-company_name          |string  |F  |公司名称
+company_id            |string  |F  |公司id
 bicycle_num           |string  |F  |车辆编号
 bicycle_type_num      |string  |F  |车型编号
 bicycle_type          |int     |F  |单车类型
