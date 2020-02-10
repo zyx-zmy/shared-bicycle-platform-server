@@ -6,14 +6,12 @@ from utils.datetime_utils import dtt
 
 class BicycleOrder(models.Model):
     bicycle_order_id = models.CharField(max_length=100, primary_key=True)
-    # 企业id
-    company_id = models.CharField(max_length=100)
-    # 企业名称
-    company_name = models.CharField(max_length=100)
+
+    company = models.ForeignKey('company.Company', on_delete=models.SET_NULL, null=True)
     # 单车编号
     bicycle_number = models.CharField(max_length=100)
     # 用户id（编号）
-    user_id = models.CharField(max_length=100)
+    user = models.ForeignKey('user.User', on_delete=models.SET_NULL, null=True)
     # 开始时间
     start_time = models.CharField(max_length=100)
     # 结束时间
@@ -37,8 +35,8 @@ class BicycleOrder(models.Model):
     def detail_info(self):
         return {
             'bicycle_order_id': self.bicycle_order_id,
-            'company_id': self.company_id,
-            'company_name': self.company_name,
+            'company_id': self.company.company_id,
+            'company_name': self.company.company_name,
             'bicycle_number': self.bicycle_number,
             'user_id': self.user_id,
             'start_time': self.start_time,

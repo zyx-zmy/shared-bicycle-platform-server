@@ -1,6 +1,6 @@
 from django import forms
 
-from utils.time_helper import ttd
+from utils.datetime_utils import ttd
 
 
 class AddUsersForm(forms.Form):

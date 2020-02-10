@@ -11,6 +11,7 @@ from bicycle.models import Bicycle
 from bicycle_beian.models import BicycleBeian
 from utils.decorators_client_bicycle import bicycle_client_required
 from utils.forms import validate_form
+from utils.helper import HttpJsonResponse
 
 
 class AddBicycle(View):
@@ -18,8 +19,9 @@ class AddBicycle(View):
     def post(self, request):
         status, data = validate_form(AddBicycleForm, request.jsondata)
         if not status:
-            return JsonResponse(status=204,data=data)
-        # todo 车辆类型去备案取
+            return HttpJsonResponse({
+                'message': 'Validate Failed',
+                'errors': data}, status=422)
         try:
             bicycle_type_num = BicycleBeian.objects.get(bicycle_model_code=data['bicycle_type_num']).bicycle_type
         except BicycleBeian.DoesNotExist:
@@ -35,7 +37,9 @@ class AlterBicycle(View):
     def post(self, request, bicycle_num):
         status, data = validate_form(AlterBicycleForm, request.jsondata)
         if not status:
-            return JsonResponse(status=204,data=data)
+            return HttpJsonResponse({
+                'message': 'Validate Failed',
+                'errors': data}, status=422)
         try:
             bicycle = Bicycle.objects.get(bicycle_num=bicycle_num)
         except Bicycle.DoesNotExist:

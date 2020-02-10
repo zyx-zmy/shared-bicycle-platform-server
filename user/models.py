@@ -7,10 +7,7 @@ from utils.datetime_utils import dtt
 class User(models.Model):
     # 用户id(与三方用户id一致)
     user_id = models.CharField(primary_key=True, max_length=100)
-    # 企业id
-    company_id = models.CharField(max_length=32)
-    # 企业名称
-    company_name = models.CharField(max_length=32)
+    company = models.ForeignKey('company.Company', on_delete=models.SET_NULL, null=True)
     # 注册时间
     registration_time = models.DateTimeField()
     # 信用积分
@@ -28,8 +25,8 @@ class User(models.Model):
     def detail_info(self):
         return {
             'user_id': self.user_id,
-            'company_id': self.company_id,
-            'company_name': self.company_name,
+            'company_id': self.company.company_id,
+            'company_name': self.company.company_name,
             'registration_time': self.registration_time,
             'credit_score': self.credit_score,
             'credit_des': self.credit_des,

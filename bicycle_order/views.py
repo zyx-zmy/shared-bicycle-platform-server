@@ -9,16 +9,19 @@ from django.views import View
 from bicycle.models import Bicycle
 from bicycle_order.forms import AddBicycleOrderForm, AlterBicycleOrderForm
 from bicycle_order.models import BicycleOrder
+from utils.decorators_client_bicycle import bicycle_client_required
 from utils.forms import validate_form
+from utils.helper import HttpJsonResponse
 
 
 class AddBicycleOrderView(View):
+    @bicycle_client_required()
     def post(self, request, bicycle_num):
-        str = request.body.decode()
-        data_dict = json.loads(str)
-        status, data = validate_form(AddBicycleOrderForm, data_dict)
+        status, data = validate_form(AddBicycleOrderForm, request.jsondata)
         if not status:
-            return JsonResponse(status=204, data=data)
+            return HttpJsonResponse({
+                'message': 'Validate Failed',
+                'errors': data}, status=422)
         try:
             Bicycle.objects.get(bicycle_num=bicycle_num)
         except Bicycle.DoesNotExist:
@@ -26,8 +29,7 @@ class AddBicycleOrderView(View):
         order_dict = {}
         order_dict['bicycle_order_id'] = data['remote_order_id']
         order_dict['bicycle_number'] = bicycle_num
-        order_dict['company_id'] = bicycle_num
-        order_dict['company_name'] = bicycle_num
+        order_dict['company_id'] = request.company_id
         order_dict['user_id'] = data['user_num']
         order_dict['start_time'] = data['start_time']
         order_dict['end_time'] = data['end_time']
@@ -43,12 +45,13 @@ class AddBicycleOrderView(View):
 
 
 class AlterBicycleOrderView(View):
+    @bicycle_client_required()
     def post(self, request, bicycle_num, remote_order_id):
-        str = request.body.decode()
-        data_dict = json.loads(str)
-        status, data = validate_form(AlterBicycleOrderForm, data_dict)
+        status, data = validate_form(AlterBicycleOrderForm, request.jsondata)
         if not status:
-            return JsonResponse(status=204, data=data)
+            return HttpJsonResponse({
+                'message': 'Validate Failed',
+                'errors': data}, status=422)
         try:
             Bicycle.objects.get(bicycle_num=bicycle_num)
         except Bicycle.DoesNotExist:

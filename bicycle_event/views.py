@@ -12,6 +12,7 @@ from bicycle_event.models import BicycleEvent
 from user.models import User
 from utils.decorators_client_bicycle import bicycle_client_required
 from utils.forms import validate_form
+from utils.helper import HttpJsonResponse
 
 
 class AddBicycleEvent(View):
@@ -19,7 +20,9 @@ class AddBicycleEvent(View):
     def post(self, request, bicycle_num):
         status, data = validate_form(AddBicycleEventForm, request.jsondata)
         if not status:
-            return JsonResponse(status=204, data=data)
+            return HttpJsonResponse({
+                'message': 'Validate Failed',
+                'errors': data}, status=422)
         try:
             Bicycle.objects.get(bicycle_num=bicycle_num)
         except Bicycle.DoesNotExist:
@@ -51,7 +54,9 @@ class AlterBicycleEvent(View):
     def post(self, request, bicycle_num, remote_event_id):
         status, data = validate_form(AlterBicycleEventForm, request.jsondata)
         if not status:
-            return JsonResponse(status=204, data=data)
+            return HttpJsonResponse({
+                'message': 'Validate Failed',
+                'errors': data}, status=422)
         try:
             Bicycle.objects.get(bicycle_num=bicycle_num)
         except Bicycle.DoesNotExist:

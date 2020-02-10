@@ -11,6 +11,7 @@ from bicycle_dispatch_info.forms import AddBicycleDispatchInfoForm, AlterBicycle
 from bicycle_dispatch_info.models import BicycleDispatchInfo
 from utils.decorators_client_bicycle import bicycle_client_required
 from utils.forms import validate_form
+from utils.helper import HttpJsonResponse
 
 
 class AddBicycleDispatchInfoView(View):
@@ -19,7 +20,9 @@ class AddBicycleDispatchInfoView(View):
     def post(self, request, bicycle_num):
         status, data = validate_form(AddBicycleDispatchInfoForm, request.jsondata)
         if not status:
-            return JsonResponse(status=204, data=data)
+            return HttpJsonResponse({
+                'message': 'Validate Failed',
+                'errors': data}, status=422)
         try:
             Bicycle.objects.get(bicycle_num=bicycle_num)
         except Bicycle.DoesNotExist:
@@ -54,7 +57,9 @@ class AlterBicycleDispatchInfoView(View):
     def post(self, request, bicycle_num, remote_record_id):
         status, data = validate_form(AlterBicycleDispatchInfoForm, request.jsondata)
         if not status:
-            return JsonResponse(status=204, data=data)
+            return HttpJsonResponse({
+                'message': 'Validate Failed',
+                'errors': data}, status=422)
         try:
             Bicycle.objects.get(bicycle_num=bicycle_num)
         except Bicycle.DoesNotExist:
