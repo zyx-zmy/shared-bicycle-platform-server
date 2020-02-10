@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'bicycle_driver_record',
     'bicycle_driving_range',
     'bicycle_event',
-    'bicycle_order'
+    'bicycle_order',
+    'company',
+    'bicycle_beian'
 ]
 
 MIDDLEWARE = [
@@ -54,8 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'utils.middleware.CORSMiddleware',
-    'utils.middleware.RemoteAddressMiddleware',
+    # 'utils.middleware.CORSMiddleware',
+    # 'utils.middleware.RemoteAddressMiddleware',
     'utils.middleware.MiddlewareMixin',
     'utils.middleware.PageNotFoundMiddleware'
 ]
@@ -86,15 +88,15 @@ WSGI_APPLICATION = 'shared_bicycle_platform_server.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('SHARED_BICYCLE_PLATFORM_SERVER_DATABASE_NAME',
-                               ''),
+                               'shared_bicycle_platform_server'),
         'USER': os.environ.get('SHARED_BICYCLE_PLATFORM_SERVER_DATABASE_USER',
-                               ''),
+                               'postgres'),
         'PASSWORD': os.environ.get('SHARED_BICYCLE_PLATFORM_SERVER_DATABASE_PASSWORD',
-                                   ''),
-        'HOST': os.environ.get('SHARED_BICYCLE_PLATFORM_SERVER_DATABASE_HOST', ''),
-        'PORT': os.environ.get('SHARED_BICYCLE_PLATFORM_SERVER_DATABASE_PORT', ''),
+                                   '123456'),
+        'HOST': os.environ.get('SHARED_BICYCLE_PLATFORM_SERVER_DATABASE_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('SHARED_BICYCLE_PLATFORM_SERVER_DATABASE_PORT', '5432'),
         'CONN_MAX_AGE': 0,
     },
 }
