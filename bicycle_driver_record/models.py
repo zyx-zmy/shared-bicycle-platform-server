@@ -7,6 +7,7 @@ from utils.helper import uuid1_hex
 
 class BicycleDriverRecord(models.Model):
     bicycle_driver_record_id = models.CharField(max_length=32, primary_key=True, default=uuid1_hex)
+    company = models.ForeignKey('company.Company', on_delete=models.SET_NULL, null=True)
     # 车辆编号
     bicycle_num = models.CharField(max_length=100)
     # 车辆状态 1:停放中 2:行驶中 3:调度 中 4:被预约
