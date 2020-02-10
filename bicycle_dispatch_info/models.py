@@ -9,10 +9,7 @@ class BicycleDispatchInfo(models.Model):
     bicycle_dispatch_info_id = models.CharField(max_length=32, primary_key=True, default=uuid1_hex)
     # 第三方调度记录id
     remote_record_id = models.CharField(max_length=100)
-    # 企业id
-    company_id = models.CharField(max_length=100)
-    # 企业名称
-    company_name = models.CharField(max_length=100)
+    company = models.ForeignKey('company.Company', on_delete=models.SET_NULL, null=True)
     # 单车编号
     bicycle_number = models.CharField(max_length=100)
     # 调度状态 1未完成,2已完成
@@ -47,8 +44,8 @@ class BicycleDispatchInfo(models.Model):
         return {
             'bicycle_dispatch_info_id': self.bicycle_dispatch_info_id,
             'remote_record_id': self.remote_record_id,
-            'company_id': self.company_id,
-            'company_name': self.company_name,
+            'company_id': self.company.company_id,
+            'company_name': self.company.company_name,
             'bicycle_number': self.bicycle_number,
             'dispatch_status': self.dispatch_status,
             'dispatcher': self.dispatcher,

@@ -9,15 +9,15 @@ from django.views import View
 from bicycle.models import Bicycle
 from bicycle_dispatch_info.forms import AddBicycleDispatchInfoForm, AlterBicycleDispatchInfoForm
 from bicycle_dispatch_info.models import BicycleDispatchInfo
+from utils.decorators_client_bicycle import bicycle_client_required
 from utils.forms import validate_form
 
 
 class AddBicycleDispatchInfoView(View):
 
+    @bicycle_client_required()
     def post(self, request, bicycle_num):
-        str = request.body.decode()
-        data_dict = json.loads(str)
-        status, data = validate_form(AddBicycleDispatchInfoForm, data_dict)
+        status, data = validate_form(AddBicycleDispatchInfoForm, request.jsondata)
         if not status:
             return JsonResponse(status=204, data=data)
         try:
@@ -33,8 +33,7 @@ class AddBicycleDispatchInfoView(View):
             pass
         dispatch_data = {}
         dispatch_data['remote_record_id'] = data['remote_record_id']
-        dispatch_data['company_id'] = bicycle_num
-        dispatch_data['company_name'] = bicycle_num
+        dispatch_data['company_id'] = request.company_id
         dispatch_data['dispatch_status'] = data['transfer_status']
         dispatch_data['dispatcher'] = data['transfer_user']
         dispatch_data['dispatcher_phone'] = data['transfer_user_tele']
@@ -51,10 +50,9 @@ class AddBicycleDispatchInfoView(View):
 
 
 class AlterBicycleDispatchInfoView(View):
+    @bicycle_client_required()
     def post(self, request, bicycle_num, remote_record_id):
-        str = request.body.decode()
-        data_dict = json.loads(str)
-        status, data = validate_form(AlterBicycleDispatchInfoForm, data_dict)
+        status, data = validate_form(AlterBicycleDispatchInfoForm, request.jsondata)
         if not status:
             return JsonResponse(status=204, data=data)
         try:
