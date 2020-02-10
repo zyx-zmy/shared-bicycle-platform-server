@@ -7,10 +7,7 @@ from utils.helper import uuid1_hex
 
 class BicycleDrivingRange(models.Model):
     bicycle_driving_range_id = models.CharField(primary_key=True, max_length=32, default=uuid1_hex)
-    # 企业id
-    company_id = models.CharField(max_length=100)
-    # 企业名称
-    company_name = models.CharField(max_length=100)
+    company = models.ForeignKey('company.Company', on_delete=models.SET_NULL, null=True)
     # 车型编号
     bicycle_type_number = models.CharField(max_length=100)
     # 行驶范围
@@ -28,8 +25,8 @@ class BicycleDrivingRange(models.Model):
     def detail_info(self):
         return {
             'bicycle_driving_range_id': self.bicycle_driving_range_id,
-            'company_id': self.company_id,
-            'company_name': self.company_name,
+            'company_id': self.company.company_id,
+            'company_name': self.company.company_name,
             'bicycle_type_number': self.bicycle_type_number,
             'driving_range': self.driving_range,
             'driving_range_limit': self.driving_range_limit,

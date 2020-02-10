@@ -1,22 +1,26 @@
 import json
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 from django.views import View
+
+from bicycle_beian.models import BicycleBeian
 from bicycle_driving_range.forms import BicycleDrivingRangeViewForm
 from bicycle_driving_range.models import BicycleDrivingRange
+from utils.decorators_client_bicycle import bicycle_client_required
 from utils.forms import validate_form
 
 
 class BicycleDrivingRangeView(View):
+    @bicycle_client_required()
     def post(self, request):
-        str = request.body.decode()
-        data_dict = json.loads(str)
-        status, data = validate_form(BicycleDrivingRangeViewForm, data_dict)
+        status, data = validate_form(BicycleDrivingRangeViewForm, request.jsondata)
         if not status:
             return JsonResponse(status=204, data=data)
-        # todo 车型编号备案校验
+        try:
+            BicycleBeian.objects.get(bicycle_model_code=data['bicycle_type_num'])
+        except BicycleBeian.DoesNotExist:
+            return HttpResponseNotFound()
         range_dict = {}
-        range_dict['company_id'] = 'company_id'
-        range_dict['company_name'] = 'company_name'
+        range_dict['company_id'] = request.company_id
         range_dict['bicycle_type_number'] = data['bicycle_type_num']
         range_dict['driving_range'] = data['bicycle_range']
         range_dict['driving_range_limit'] = data['range_type']
