@@ -10,14 +10,14 @@ from bicycle.models import Bicycle
 from bicycle_event.forms import AddBicycleEventForm, AlterBicycleEventForm
 from bicycle_event.models import BicycleEvent
 from user.models import User
+from utils.decorators_client_bicycle import bicycle_client_required
 from utils.forms import validate_form
 
 
 class AddBicycleEvent(View):
+    @bicycle_client_required()
     def post(self, request, bicycle_num):
-        str = request.body.decode()
-        data_dict = json.loads(str)
-        status, data = validate_form(AddBicycleEventForm, data_dict)
+        status, data = validate_form(AddBicycleEventForm, request.jsondata)
         if not status:
             return JsonResponse(status=204, data=data)
         try:
@@ -25,15 +25,14 @@ class AddBicycleEvent(View):
         except Bicycle.DoesNotExist:
             return HttpResponseNotFound()
         try:
-            User.objects.get(user_id=data['user_num'])
+            user = User.objects.get(user_id=data['user_num'])
         except Bicycle.DoesNotExist:
             return HttpResponseNotFound()
         event_dict = {}
         event_dict['bicycle_event_id'] = data['remote_event_id']
         event_dict['bicycle_number'] = bicycle_num
-        event_dict['company_id'] = bicycle_num
-        event_dict['company_name'] = bicycle_num
-        event_dict['user_id'] = data['user_num']
+        event_dict['company_id'] = request.company_id
+        event_dict['user'] = user
         event_dict['event_type'] = data['event_type']
         event_dict['bicycle_order_id'] = data['bicycle_order_id']
         event_dict['start_time'] = data['start_time']
@@ -48,10 +47,9 @@ class AddBicycleEvent(View):
         return HttpResponse(status=204)
 
 class AlterBicycleEvent(View):
+    @bicycle_client_required()
     def post(self, request, bicycle_num, remote_event_id):
-        str = request.body.decode()
-        data_dict = json.loads(str)
-        status, data = validate_form(AlterBicycleEventForm, data_dict)
+        status, data = validate_form(AlterBicycleEventForm, request.jsondata)
         if not status:
             return JsonResponse(status=204, data=data)
         try:
