@@ -66,52 +66,54 @@ class AlterBicycle(View):
         return HttpResponse(status=204)
 
 class BicycleView(View):
-	@session_required()
-	def get(self, request):
-		flag, data = validate_form(BicycleForm, request.jsondata)
-		if not flag:
-			return HttpJsonResponse({"message": "Validation Failed", "errors": data}, status=422)
-		q = Q()
-		if data["company_name"]:
-			company = Company.objects.filter(company_name__icontains=data["company_name"])
-			ids = [x.company_id for x in company]
-			q &= Q(company_id__in=ids)
-		if data["bicycle_num"]:
-			q &= Q(bicycle_num=data["bicycle_num"])
-		if data["bicycle_type_num"]:
-			q &= Q(bicycle_type_num=data["bicycle_type_num"])
-		if data["bicycle_type"]:
-			q &= Q(bicycle_type=data["bicycle_type"])
-		if data["put_status"]:
-			q &= Q(put_status=data["put_status"])
-		responses = Bicycle.objects.filter(q).order_by("-updated_time")
-		responses_count = len(responses)
-		responses = Paginator(responses, data['page_size'])
-		responses = responses.page(data['page_num'])
-		responses = [res.detail_info() for res in responses]
-		response = HttpJsonResponse(responses)
-		next_page = True if responses_count > data['page_size'] * data['page_num'] else False
-		if next_page:
-			params = 'page_num=%d&page_size=%d' % (data['page_num'] + 1, data['page_size'])
-			if data['company_name']:
-				params += '&company_name=%s' % (data['company_name'])
-			if data['bicycle_num']:
-				params += '&bicycle_num=%s' % data['bicycle_num']
-			if data['bicycle_type_num']:
-				params += '&bicycle_type_num=%s' % data['bicycle_type_num']
-			if data['bicycle_type']:
-				params += '&bicycle_type=%s' % data['bicycle_type']
-			if data['put_status']:
-				params += '&put_status=%s' % data['put_status']
-			response['Link'] = r'<%s%s?%s>; rel="next"' % (
-				get_local_host(request), request.path, params)
-		return response
+    @session_required()
+    def get(self, request):
+        flag, data = validate_form(BicycleForm, request.jsondata)
+        if not flag:
+            return HttpJsonResponse({"message": "Validation Failed", "errors": data}, status=422)
+        q = Q()
+        if data["company_id"]:
+            try:
+                company = Company.objects.get(company_id=data["company_id"])
+            except Company.DoesNotExist:
+                return HttpJsonResponse([])
+            q &= Q(company=company)
+        if data["bicycle_num"]:
+            q &= Q(bicycle_num=data["bicycle_num"])
+        if data["bicycle_type_num"]:
+            q &= Q(bicycle_type_num=data["bicycle_type_num"])
+        if data["bicycle_type"]:
+            q &= Q(bicycle_type=data["bicycle_type"])
+        if data["put_status"]:
+            q &= Q(put_status=data["put_status"])
+        responses = Bicycle.objects.filter(q).order_by("-updated_time")
+        responses_count = len(responses)
+        responses = Paginator(responses, data['page_size'])
+        responses = responses.page(data['page_num'])
+        responses = [res.detail_info() for res in responses]
+        response = HttpJsonResponse(responses)
+        next_page = True if responses_count > data['page_size'] * data['page_num'] else False
+        if next_page:
+            params = 'page_num=%d&page_size=%d' % (data['page_num'] + 1, data['page_size'])
+            if data['company_name']:
+                params += '&company_name=%s' % (data['company_name'])
+            if data['bicycle_num']:
+                params += '&bicycle_num=%s' % data['bicycle_num']
+            if data['bicycle_type_num']:
+                params += '&bicycle_type_num=%s' % data['bicycle_type_num']
+            if data['bicycle_type']:
+                params += '&bicycle_type=%s' % data['bicycle_type']
+            if data['put_status']:
+                params += '&put_status=%s' % data['put_status']
+            response['Link'] = r'<%s%s?%s>; rel="next"' % (
+                get_local_host(request), request.path, params)
+        return response
 
 class BicyclesView(View):
-	@session_required()
-	def get(self, request, bicycle_id):
-		try:
-			record = Bicycle.objects.get(bicycle_id=bicycle_id)
-		except Bicycle.DoesNotExist:
-			return HttpResponseNotFound()
-		return HttpJsonResponse(record.detail_info())
+    @session_required()
+    def get(self, request, bicycle_id):
+        try:
+            record = Bicycle.objects.get(bicycle_id=bicycle_id)
+        except Bicycle.DoesNotExist:
+            return HttpResponseNotFound()
+        return HttpJsonResponse(record.detail_info())
