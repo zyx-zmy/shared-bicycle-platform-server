@@ -1,0 +1,17 @@
+django==2.2.8
+gevent==1.4.0
+djmemcache==0.13
+gunicorn==19.6.0
+requests==2.20.0
+psycogreen==1.0
+psycopg2
+pycrypto==2.6.1
+pytz==2016.6.1
+raven==5.24.2
+psycopg2-binary==2.7.4
+django-db-geventpool==1.20.1
+python-dateutil
+django-form-extensions==0.0.4
+
+
+

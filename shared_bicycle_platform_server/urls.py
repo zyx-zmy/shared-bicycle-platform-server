@@ -19,4 +19,10 @@ from django.urls import path, include
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('', include('user.urls')),
+    path('', include('bicycle_dispatch_info.urls')),
+    path('', include('bicycle_driver_record.urls')),
+    path('', include('bicycle_driving_range.urls')),
+    path('', include('bicycle_event.urls')),
+    path('', include('bicycle_order.urls')),
+    path('', include('bicycle.urls')),
 ]

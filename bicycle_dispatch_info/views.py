@@ -9,7 +9,7 @@ from django.views import View
 from bicycle.models import Bicycle
 from bicycle_dispatch_info.forms import AddBicycleDispatchInfoForm, AlterBicycleDispatchInfoForm
 from bicycle_dispatch_info.models import BicycleDispatchInfo
-from utils.form_helper import verify_form
+from utils.forms import validate_form
 
 
 class AddBicycleDispatchInfoView(View):
@@ -17,7 +17,7 @@ class AddBicycleDispatchInfoView(View):
     def post(self, request, bicycle_num):
         str = request.body.decode()
         data_dict = json.loads(str)
-        data, status = verify_form(AddBicycleDispatchInfoForm, data_dict)
+        status, data = validate_form(AddBicycleDispatchInfoForm, data_dict)
         if not status:
             return JsonResponse(status=204, data=data)
         try:
@@ -54,7 +54,7 @@ class AlterBicycleDispatchInfoView(View):
     def post(self, request, bicycle_num, remote_record_id):
         str = request.body.decode()
         data_dict = json.loads(str)
-        data, status = verify_form(AlterBicycleDispatchInfoForm, data_dict)
+        status, data = validate_form(AlterBicycleDispatchInfoForm, data_dict)
         if not status:
             return JsonResponse(status=204, data=data)
         try:

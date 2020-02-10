@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponseNotFound
 from django.views import View
 from user.forms import AddUsersForm, AlterUsersForm
 from user.models import User
-from utils.form_helper import verify_form
+from utils.forms import validate_form
 
 
 class AddUsers(View):
@@ -11,7 +11,7 @@ class AddUsers(View):
     def post(self, request):
         str = request.body.decode()
         data_dict = json.loads(str)
-        data, status = verify_form(AddUsersForm, data_dict)
+        status, data = validate_form(AddUsersForm, data_dict)
         if not status:
             return JsonResponse(
                 status=204,
@@ -33,7 +33,7 @@ class AlterUsers(View):
     def post(self, request, user_num):
         str = request.body.decode()
         data_dict = json.loads(str)
-        data, status = verify_form(AlterUsersForm, data_dict)
+        status, data = validate_form(AlterUsersForm, data_dict)
         if not status:
             return JsonResponse(
                 status=204,

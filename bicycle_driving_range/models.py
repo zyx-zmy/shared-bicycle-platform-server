@@ -1,12 +1,12 @@
 from django.db import models
 
 # Create your models here.
-from utils.time_helper import dtt
-from utils.uu32_helper import uuid32
+from utils.datetime_utils import dtt
+from utils.helper import uuid1_hex
 
 
 class BicycleDrivingRange(models.Model):
-    bicycle_driving_range_id = models.CharField(primary_key=True, max_length=32, default=uuid32)
+    bicycle_driving_range_id = models.CharField(primary_key=True, max_length=32, default=uuid1_hex)
     # 企业id
     company_id = models.CharField(max_length=100)
     # 企业名称

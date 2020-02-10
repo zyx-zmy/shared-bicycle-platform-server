@@ -1,10 +1,12 @@
 from django.db import models
-from utils.time_helper import dtt
-from utils.uu32_helper import uuid32
+
+from utils.datetime_utils import dtt
+from utils.helper import uuid1_hex
+
 
 
 class BicycleDispatchInfo(models.Model):
-    bicycle_dispatch_info_id = models.CharField(max_length=32, primary_key=True, default=uuid32)
+    bicycle_dispatch_info_id = models.CharField(max_length=32, primary_key=True, default=uuid1_hex)
     # 第三方调度记录id
     remote_record_id = models.CharField(max_length=100)
     # 企业id

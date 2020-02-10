@@ -1,6 +1,6 @@
 from django import forms
 
-from utils.time_helper import ttd
+
 
 
 class AddBicycleEventForm(forms.Form):

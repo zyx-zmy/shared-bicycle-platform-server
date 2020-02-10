@@ -9,14 +9,14 @@ from django.views import View
 from bicycle.models import Bicycle
 from bicycle_order.forms import AddBicycleOrderForm, AlterBicycleOrderForm
 from bicycle_order.models import BicycleOrder
-from utils.form_helper import verify_form
+from utils.forms import validate_form
 
 
 class AddBicycleOrderView(View):
     def post(self, request, bicycle_num):
         str = request.body.decode()
         data_dict = json.loads(str)
-        data, status = verify_form(AddBicycleOrderForm, data_dict)
+        status, data = validate_form(AddBicycleOrderForm, data_dict)
         if not status:
             return JsonResponse(status=204, data=data)
         try:
@@ -46,7 +46,7 @@ class AlterBicycleOrderView(View):
     def post(self, request, bicycle_num, remote_order_id):
         str = request.body.decode()
         data_dict = json.loads(str)
-        data, status = verify_form(AlterBicycleOrderForm, data_dict)
+        status, data = validate_form(AlterBicycleOrderForm, data_dict)
         if not status:
             return JsonResponse(status=204, data=data)
         try:

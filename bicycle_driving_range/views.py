@@ -3,14 +3,14 @@ from django.http import JsonResponse, HttpResponse
 from django.views import View
 from bicycle_driving_range.forms import BicycleDrivingRangeViewForm
 from bicycle_driving_range.models import BicycleDrivingRange
-from utils.form_helper import verify_form
+from utils.forms import validate_form
 
 
 class BicycleDrivingRangeView(View):
     def post(self, request):
         str = request.body.decode()
         data_dict = json.loads(str)
-        data, status = verify_form(BicycleDrivingRangeViewForm, data_dict)
+        status, data = validate_form(BicycleDrivingRangeViewForm, data_dict)
         if not status:
             return JsonResponse(status=204, data=data)
         # todo 车型编号备案校验

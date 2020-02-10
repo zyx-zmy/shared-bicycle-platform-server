@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '3hb$50(+21kezfwhesk^jc#n0m@a+03t6+yh$%8o(%n4*1%l7s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True').upper() == 'TRUE'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', ]
 
 
 # Application definition
@@ -37,7 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user'
+    'user',
+    'bicycle',
+    'bicycle_dispatch_info',
+    'bicycle_driver_record',
+    'bicycle_driving_range',
+    'bicycle_event',
+    'bicycle_order'
 ]
 
 MIDDLEWARE = [
@@ -48,6 +54,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'utils.middleware.CORSMiddleware',
+    'utils.middleware.RemoteAddressMiddleware',
+    'utils.middleware.MiddlewareMixin',
+    'utils.middleware.PageNotFoundMiddleware'
 ]
 
 ROOT_URLCONF = 'shared_bicycle_platform_server.urls'
@@ -76,15 +86,17 @@ WSGI_APPLICATION = 'shared_bicycle_platform_server.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'shared_bicycle_platform_server',#数据库名称
-        'USER': 'postgres',#拥有者，这个一般没修改
-        'PASSWORD': '123456',#密码，自己设定的
-        'HOST': '127.0.0.1',#默认的就没写
-        'PORT': '5432',
-    }
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': os.environ.get('SHARED_BICYCLE_PLATFORM_SERVER_DATABASE_NAME',
+                               ''),
+        'USER': os.environ.get('SHARED_BICYCLE_PLATFORM_SERVER_DATABASE_USER',
+                               ''),
+        'PASSWORD': os.environ.get('SHARED_BICYCLE_PLATFORM_SERVER_DATABASE_PASSWORD',
+                                   ''),
+        'HOST': os.environ.get('SHARED_BICYCLE_PLATFORM_SERVER_DATABASE_HOST', ''),
+        'PORT': os.environ.get('SHARED_BICYCLE_PLATFORM_SERVER_DATABASE_PORT', ''),
+        'CONN_MAX_AGE': 0,
+    },
 }
 
 
@@ -125,3 +137,43 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] [%(process)d:%(thread)d] [%(levelname)s]'
+                      ' [%(name)s] [%(pathname)s:%(lineno)d] -- %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S %z',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'default': {
+            'handlers': ['console'],
+            'level': 'DEBUG' if DEBUG else 'WARNING',
+        },
+    },
+}
+
+
+# Sentry
+RAVEN_CONFIG = {
+    'dsn': 'http://{}:{}@guard.uucin.com/{}'.format(
+        os.environ.get('SENTRY_CLIENT_ID', ''),
+        os.environ.get('SENTRY_CLIENT_SECRET', ''),
+        os.environ.get('SENTRY_PROJECT_ID', ''),
+    ),
+}
+
+if os.environ.get('ENABLE_SENTRY', 'False').upper() == 'TRUE':
+    INSTALLED_APPS = INSTALLED_APPS + ['raven.contrib.django.raven_compat', ]

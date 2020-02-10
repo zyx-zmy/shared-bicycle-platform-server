@@ -8,7 +8,7 @@ from django.views import View
 
 from bicycle.forms import AddBicycleForm, AlterBicycleForm
 from bicycle.models import Bicycle
-from utils.form_helper import verify_form
+from utils.forms import validate_form
 
 
 class AddBicycle(View):
@@ -16,7 +16,7 @@ class AddBicycle(View):
     def post(self, request):
         str = request.body.decode()
         data_dict = json.loads(str)
-        data, status = verify_form(AddBicycleForm, data_dict)
+        status, data = validate_form(AddBicycleForm, data_dict)
         if not status:
             return JsonResponse(status=204,data=data)
         # todo 车辆类型去备案取
@@ -32,7 +32,7 @@ class AlterBicycle(View):
         print(111)
         str = request.body.decode()
         data_dict = json.loads(str)
-        data, status = verify_form(AlterBicycleForm, data_dict)
+        status, data = validate_form(AlterBicycleForm, data_dict)
         if not status:
             return JsonResponse(status=204,data=data)
         try:

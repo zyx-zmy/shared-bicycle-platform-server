@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from utils.time_helper import dtt
+from utils.datetime_utils import dtt
 
 
 class BicycleEvent(models.Model):

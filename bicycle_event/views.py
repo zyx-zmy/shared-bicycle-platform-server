@@ -10,14 +10,14 @@ from bicycle.models import Bicycle
 from bicycle_event.forms import AddBicycleEventForm, AlterBicycleEventForm
 from bicycle_event.models import BicycleEvent
 from user.models import User
-from utils.form_helper import verify_form
+from utils.forms import validate_form
 
 
 class AddBicycleEvent(View):
     def post(self, request, bicycle_num):
         str = request.body.decode()
         data_dict = json.loads(str)
-        data, status = verify_form(AddBicycleEventForm, data_dict)
+        status, data = validate_form(AddBicycleEventForm, data_dict)
         if not status:
             return JsonResponse(status=204, data=data)
         try:
@@ -51,7 +51,7 @@ class AlterBicycleEvent(View):
     def post(self, request, bicycle_num, remote_event_id):
         str = request.body.decode()
         data_dict = json.loads(str)
-        data, status = verify_form(AlterBicycleEventForm, data_dict)
+        status, data = validate_form(AlterBicycleEventForm, data_dict)
         if not status:
             return JsonResponse(status=204, data=data)
         try:

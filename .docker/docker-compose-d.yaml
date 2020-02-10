@@ -1,0 +1,16 @@
+version: "2"
+services:
+    booking:
+        build:
+            context: ..
+            dockerfile: .docker/Dockerfile
+        image: shared-bicycle-platform-server
+        ports:
+            - "9901:8000"
+        restart: always
+        env_file: ./environment-d
+
+
+
+
+
