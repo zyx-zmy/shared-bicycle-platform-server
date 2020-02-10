@@ -1,26 +1,18 @@
-import time
-import datetime
-import math
-import json
-import threading
-import itertools
-import urllib.request
-from django.contrib import auth
-from django.contrib.auth import get_user_model
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import logging
+from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound, HttpResponse, HttpResponseForbidden
 from django.db.models import Q
 from django.views.generic import View
 from utils.datetime_utils import dtt, ttd
 from utils.forms import validate_form
 from utils.responses import HttpJsonResponse
-from utils.decorators import session_required, json_required, operation_session_required
+from utils.decorators import session_required, json_required
 from utils.helper import get_local_host
-from functools import reduce
 from company.models import Company
 from company.forms import CompanyForm, CompanysForm
 # Create your views here.
 
+logger = logging.getLogger('default')
 class CompanyView(View):
 	
 	@session_required()

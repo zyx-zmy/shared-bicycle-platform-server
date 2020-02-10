@@ -1,14 +1,14 @@
-# import json
-# import logging
-# import re
-#
-# from django.http.response import HttpResponseBadRequest, HttpResponseForbidden
+import json
+import logging
+import re
+
+from django.http.response import HttpResponseBadRequest, HttpResponseForbidden
 #
 #
 # from utils.passport import check_token
 # from utils.utils import OperationSessionRequest
 #
-# logger = logging.getLogger('default')
+logger = logging.getLogger('default')
 #
 #
 # def admin_required(
@@ -33,58 +33,58 @@
 #     return _session_required
 #
 #
-# def session_required(
-#         required=True, json_stream=True, has_version=True,
-#         methods=["GET", "POST", "PUT", "DELETE", "PATCH"]):
-#     def _session_required(view):
-#         def __decorator(self, request, *args, **kwargs):
-#             if request.method not in methods:
-#                 return view(request, *args, **kwargs)
-#             if not request.user.is_authenticated():
-#                 return HttpResponseForbidden(json.dumps({
-#                     "message": "Authorization failed"}))
-#             if not _deal_request(request):
-#                 return HttpResponseBadRequest(json.dumps({
-#                     "message": "Problems parsing JSON"}))
-#             return view(self, request, *args, **kwargs)
-#
-#         return __decorator
-#
-#     return _session_required
-#
-#
-# def json_required(methods=["GET", "POST", "PUT", "DELETE", "PATCH"]):
-#     def _json_required(view):
-#         def __decorator(self, request, *args, **kwargs):
-#             if request.method not in methods:
-#                 return view(request, *args, **kwargs)
-#             if not _deal_request(request):
-#                 return HttpResponseBadRequest(json.dumps({
-#                     "message": "Problems parsing JSON"}))
-#             return view(self, request, *args, **kwargs)
-#
-#         return __decorator
-#
-#     return _json_required
-#
-#
-# def _deal_request(request, json_stream=True):
-#     if json_stream and request.method in ['PUT', 'POST', 'PATCH', 'DELETE']:
-#         stream = request.body
-#         if stream:
-#             try:
-#                 if isinstance(stream, bytes):
-#                     stream = stream.decode()
-#                 request.jsondata = json.loads(stream)
-#             except Exception as e:
-#                 if isinstance(e, ValueError):
-#                     request.jsondata = {}
-#                 else:
-#                     return False
-#         else:
-#             request.jsondata = {}
-#     return True
-#
+def session_required(
+        required=True, json_stream=True, has_version=True,
+        methods=["GET", "POST", "PUT", "DELETE", "PATCH"]):
+    def _session_required(view):
+        def __decorator(self, request, *args, **kwargs):
+            if request.method not in methods:
+                return view(request, *args, **kwargs)
+            if not request.user.is_authenticated():
+                return HttpResponseForbidden(json.dumps({
+                    "message": "Authorization failed"}))
+            if not _deal_request(request):
+                return HttpResponseBadRequest(json.dumps({
+                    "message": "Problems parsing JSON"}))
+            return view(self, request, *args, **kwargs)
+
+        return __decorator
+
+    return _session_required
+
+
+def json_required(methods=["GET", "POST", "PUT", "DELETE", "PATCH"]):
+    def _json_required(view):
+        def __decorator(self, request, *args, **kwargs):
+            if request.method not in methods:
+                return view(request, *args, **kwargs)
+            if not _deal_request(request):
+                return HttpResponseBadRequest(json.dumps({
+                    "message": "Problems parsing JSON"}))
+            return view(self, request, *args, **kwargs)
+
+        return __decorator
+
+    return _json_required
+
+
+def _deal_request(request, json_stream=True):
+    if json_stream and request.method in ['PUT', 'POST', 'PATCH', 'DELETE']:
+        stream = request.body
+        if stream:
+            try:
+                if isinstance(stream, bytes):
+                    stream = stream.decode()
+                request.jsondata = json.loads(stream)
+            except Exception as e:
+                if isinstance(e, ValueError):
+                    request.jsondata = {}
+                else:
+                    return False
+        else:
+            request.jsondata = {}
+    return True
+
 #
 # def token_required(
 #         required=True, json_stream=True, methods=[
