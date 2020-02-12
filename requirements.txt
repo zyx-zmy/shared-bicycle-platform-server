@@ -1,4 +1,4 @@
-django==2.2.8
+django==2.2.10
 gevent==1.4.0
 djmemcache==0.13
 gunicorn==19.6.0
